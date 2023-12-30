@@ -5,23 +5,29 @@ export default function Footer() {
   const year = date.getFullYear();
 
   return (
-    <div className="bg-[#141e30] text-white p-20">
+    <div className="bg-[#141e30] text-white p-5 md:p-10 lg:p-20">
       <div className="flex justify-between">
         <div className="flex gap-20">
           <ul className="flex flex-col items-start space-y-2">
             <li>
               <button>
-                <Link to="/">Home</Link>
+                <Link to="/" className="whitespace-nowrap">
+                  Home
+                </Link>
               </button>
             </li>
             <li>
               <button>
-                <Link to="/all-books">All Books</Link>
+                <Link to="/all-books" className="whitespace-nowrap">
+                  All Books
+                </Link>
               </button>
             </li>
             <li>
               <button>
-                <Link to="/add-new-book">Add New</Link>
+                <Link to="/add-new-book" className="whitespace-nowrap">
+                  Add New
+                </Link>
               </button>
             </li>
           </ul>

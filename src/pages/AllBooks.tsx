@@ -34,8 +34,6 @@ const AllBooks = () => {
       ? new Date(selectDate).getFullYear()
       : null;
 
-    console.log(currentSelectDate, "currentSelectDate", selectDate);
-
     if (searchText !== "") {
       // Convert search text to lower case for case-insensitive search
       const lowerCaseSearchText = searchText.toLowerCase();
@@ -69,7 +67,7 @@ const AllBooks = () => {
       currentSelectDate !== 1970 &&
       selectDate !== null
     ) {
-      const filteredData = data?.data.filter(
+      filteredData = data?.data.filter(
         (item: BookInterface) =>
           parseInt(item.publicationDate) === currentSelectDate
       );
@@ -97,16 +95,16 @@ const AllBooks = () => {
     <div className="w-[90%] mx-auto relative flex flex-col">
       <div className="">
         <form>
-          <div className="flex">
+          <div className="flex flex-col-reverse md:flex-row gap-2 md:gap-0 py-2">
             <div
-              className="flex flex-col bg-gray-700 rounded-s-lg"
+              className="flex flex-col bg-gray-700 rounded-s-lg rounded-r-lg md:rounded-r-none"
               onMouseLeave={() => setShowDropdown(false)}
             >
               <button
                 onClick={() => {
                   setShowDropdown(!showDropdown);
                 }}
-                className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900    dark:text-white  whitespace-nowrap h-10 w-36"
+                className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900    dark:text-white whitespace-nowrap h-10 w-36"
                 type="button"
               >
                 {selectedCategory !== "" ? selectedCategory : "All categories"}
@@ -154,24 +152,26 @@ const AllBooks = () => {
                 </div>
               )}
             </div>
-            <div className="border-l border-r border-white">
+
+            <div className=" border-white">
               <DatePicker
                 selected={selectDate}
                 onChange={(date) => {
                   setSelectDate(date);
                   setSearchText("");
                 }}
-                className="w-[200px] px-3 py-2 !outline-none border-none bg-gray-700 text-white text-center"
+                className="w-full md:w-[200px] rounded-lg md:rounded-none px-3 py-2 !outline-none border-none bg-gray-700 text-white text-center"
                 showYearPicker
                 isClearable
                 dateFormat="yyyy"
+                placeholderText="Search by year"
               />
             </div>
 
             <div className="w-full flex h-10">
               <input
                 type="search"
-                className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500 rounded-l-md md:rounded-l-none"
                 placeholder="Search by Name, Genre, Author..."
                 required
                 value={searchText}
@@ -206,7 +206,7 @@ const AllBooks = () => {
           </div>
         </form>
       </div>
-      <div className="grid grid-cols-3 gap-4 mt-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-40 md:mt-20">
         {allBooks?.length > 0 &&
           allBooks.map((book: BookInterface) => (
             <BookCard key={book?._id} book={book} />

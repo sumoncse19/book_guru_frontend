@@ -7,15 +7,15 @@ const BookCard = ({ book }: { book: BookInterface }) => {
   const [hoverItemId, setHoverItemId] = useState("");
   return (
     <div className="flex flex-col space-y-2 w-full">
-      <div className="flex justify-center items-center w-full border rounded-lg">
+      <div className="flex justify-center items-center w-full border rounded-lg h-full">
         <div
-          className="bg-white rounded-lg w-full h-60 hover:bg-gray-200 shadow-md flex card text-grey-darkest cursor-pointer"
+          className="bg-white rounded-lg w-full h-full hover:bg-gray-200 shadow-md flex flex-col md:flex-row grow card text-grey-darkest cursor-pointer"
           onClick={() => navigate(`/book/${book._id}`)}
           onMouseEnter={() => setHoverItemId(book._id)}
           onMouseLeave={() => setHoverItemId("")}
         >
           <img
-            className="w-1/2 h-full rounded-l-lg"
+            className="w-full md:w-1/2 h-[400px] md:h-full rounded-l-lg flex flex-col grow"
             src={book?.image}
             alt="Room Image"
           />

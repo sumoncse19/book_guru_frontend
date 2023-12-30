@@ -19,6 +19,7 @@ const DeleteConfirmationDialog = ({
 
   useEffect(() => {
     if (isSuccess) {
+      toast.dismiss();
       toast.success("Book deleted successfully");
       setOpenModal(false);
       navigate("/all-books");

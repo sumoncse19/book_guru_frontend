@@ -8,6 +8,7 @@ import { useAppSelector } from "../redux/hook";
 import DeleteConfirmationDialog from "../components/base/DeleteConfirmationDialog";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { ReviewInterface } from "../types/bookType";
 
 const SingleBook = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -24,14 +25,10 @@ const SingleBook = () => {
     { isLoading: postLoading, isError: postError, isSuccess },
   ] = usePostReviewMutation();
   const { user } = useAppSelector((state) => state.user);
-  const getYear = (dateString: string) => {
-    const dateObject = new Date(dateString);
-    const year = dateObject.getFullYear();
-    return year;
-  };
 
   useEffect(() => {
     if (isSuccess) {
+      toast.dismiss();
       toast.success("Review added successfully");
       setReview("");
     }
@@ -39,11 +36,13 @@ const SingleBook = () => {
 
   const handleSubmitReview = () => {
     if (!user._id) {
+      toast.dismiss();
       return toast.error("Please login");
     }
     if (review !== "") {
       postReview({ userId: user._id, bookId: id, review: review });
     } else {
+      toast.dismiss();
       toast.error("Please write something!");
     }
   };
@@ -60,7 +59,7 @@ const SingleBook = () => {
   return (
     <>
       <div className="flex flex-wrap gap-4 max-w-7xl mx-auto items-center border-b border-gray-300">
-        <div className="pr-5">
+        <div className="md:pr-5">
           <img src={book?.data?.image} alt="" />
         </div>
 
@@ -69,9 +68,10 @@ const SingleBook = () => {
           <p className="text-xl">Author: {book?.data?.author}</p>
           <p className="text-xl">Genre: {book?.data?.genre}</p>
           <p className="text-xl">
-            Publication Date: {getYear(book?.data?.publicationDate)}
+            Publication Date: {book?.data?.publicationDate}
           </p>
-          {user._id && user._id == book.userId && (
+
+          {user._id && user._id == book.data.userId && (
             <div className="flex gap-4">
               <Link
                 to={`/edit-book/${id}`}
@@ -91,7 +91,7 @@ const SingleBook = () => {
       </div>
       {reviews.length > 0 ? (
         <div className="flex flex-wrap gap-4 my-5">
-          {reviews.map((review: any) => {
+          {reviews.map((review: ReviewInterface) => {
             return (
               <div
                 key={review._id}

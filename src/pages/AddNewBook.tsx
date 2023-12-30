@@ -23,19 +23,31 @@ const AddNewBook = () => {
       setAuthor("");
       setGenre("");
       setImage("");
+      toast.dismiss();
       toast.success("Add book successful");
     }
   }, [isSuccess]);
 
   const handleAddBook = () => {
-    postBook({
-      userId: user._id,
-      title,
-      author,
-      genre,
-      publicationDate: startDate,
-      image,
-    });
+    if (
+      title === "" ||
+      author === "" ||
+      genre === "" ||
+      image === "" ||
+      startDate === null
+    ) {
+      toast.dismiss();
+      toast.error("Please fill all the fields");
+    } else {
+      postBook({
+        userId: user._id,
+        title,
+        author,
+        genre,
+        publicationDate: startDate,
+        image,
+      });
+    }
   };
   if (isLoading) {
     return (
@@ -48,9 +60,9 @@ const AddNewBook = () => {
     return <p>Error</p>;
   }
   return (
-    <div className="p-24 flex flex-col items-center w-1/2 mx-auto bg-slate-800 text-white rounded-lg ">
+    <div className="p-4 md:p-8 lg:p-24 flex flex-col items-center w-full md:w-[50%] mx-auto bg-slate-800 text-white rounded-lg">
       <h1 className="text-2xl font-bold mb-7">Add New Book</h1>
-      <div className=" p-3 w-full">
+      <div className="md:p-3 w-full">
         <div className="flex justify-between items-center my-2">
           <label className="text-xl font-medium" htmlFor="title">
             Title
@@ -97,10 +109,12 @@ const AddNewBook = () => {
           <label className="text-xl font-medium" htmlFor="publication">
             Publication
           </label>
-          <div className="w-[70%] border border-blue-500 bg-white text-black rounded-md outline-none ">
+          <div className="w-[70%] border border-blue-500 bg-white text-black rounded-md outline-none">
             <DatePicker
               selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              onChange={(date) => {
+                setStartDate(date);
+              }}
               // renderYearContent={renderYearContent}
               className="!w-full px-3 py-2 !outline-none border-none text-black rounded-md"
               showYearPicker
@@ -125,7 +139,7 @@ const AddNewBook = () => {
       </div>
       <button
         onClick={handleAddBook}
-        className="ml-[420px] bg-green-500 px-12 rounded-md text-white font-semibold py-2"
+        className=" bg-green-500 px-12 rounded-md text-white font-semibold py-2"
       >
         Save
       </button>

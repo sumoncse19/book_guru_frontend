@@ -6,3 +6,17 @@ export interface BookInterface {
   genre: string;
   image: string;
 }
+
+export interface ReviewInterface {
+  _id: string;
+  userId: string;
+  bookId: string;
+  review: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    password: string;
+    authKey: number;
+  };
+}
