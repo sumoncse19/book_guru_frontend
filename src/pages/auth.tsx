@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../assets/css/auth/auth.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   useSignInMutation,
   useSignUpMutation,
@@ -50,16 +50,23 @@ const Auth = () => {
   const [signIn] = useSignInMutation();
   const [signUp] = useSignUpMutation();
   const dispatch = useAppDispatch();
+  const redirectAfterLogin =
+    sessionStorage.getItem("redirectAfterLogin") || "/";
+
   const isFetchBaseQueryError = (error: any): error is FetchBaseQueryError => {
     return error && "status" in error;
   };
+
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const apiResponse: ApiResponse = await signIn({
       email: `${email}`,
       password: `${password}`,
     });
-    navigate("/");
+
+    navigate(redirectAfterLogin, { replace: true });
+    sessionStorage.removeItem("redirectAfterLogin");
+
     if (
       isFetchBaseQueryError(apiResponse.error) &&
       apiResponse.error.status === 404
@@ -85,7 +92,13 @@ const Auth = () => {
   };
 
   return (
-    <div className="authBody h-screen flex flex-col justify-center content-center flex-wrap">
+    <div className="authBody h-screen flex flex-col justify-center content-center flex-wrap relative">
+      <Link
+        to="/"
+        className="text-white text-xl font-bold absolute top-4 left-4 "
+      >
+        Book Guru
+      </Link>
       <div className="authWrapper">
         <div className="button-box">
           <div
