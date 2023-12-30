@@ -48,7 +48,11 @@ const EditBook = () => {
     });
   };
   if (isLoading || editLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-[70vh] flex flex-col justify-center items-center">
+        Loading...
+      </div>
+    );
   }
   if (error || editError) {
     return <div>Error</div>;

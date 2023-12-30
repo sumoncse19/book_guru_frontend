@@ -41,21 +41,30 @@ const SingleBook = () => {
     if (!user._id) {
       return toast.error("Please login");
     }
-    postReview({ userId: user._id, bookId: id, review: review });
+    if (review !== "") {
+      postReview({ userId: user._id, bookId: id, review: review });
+    } else {
+      toast.error("Please write something!");
+    }
   };
   if (isLoading || reviewLoading || postLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-[70vh] flex flex-col justify-center items-center">
+        Loading...
+      </div>
+    );
   }
   if (error || reviewError || postError) {
     return <div>Error</div>;
   }
   return (
     <>
-      <div className="flex max-w-7xl mx-auto items-center border-b border-gray-300">
-        <div className="w-[50%]">
+      <div className="flex flex-wrap gap-4 max-w-7xl mx-auto items-center border-b border-gray-300">
+        <div className="pr-5">
           <img src={book?.data?.image} alt="" />
         </div>
-        <div className="w-[50%] space-y-3">
+
+        <div className="pl-4 space-y-3">
           <h1 className="text-3xl font-semibold">{book?.data?.title}</h1>
           <p className="text-xl">Author: {book?.data?.author}</p>
           <p className="text-xl">Genre: {book?.data?.genre}</p>
@@ -86,7 +95,7 @@ const SingleBook = () => {
             return (
               <div
                 key={review._id}
-                className="flex flex-col justify-center gap-4 border-b border-gray-300 bg-gray-300 p-4"
+                className="flex justify-center gap-4 border-b border-gray-300 bg-gray-300 p-4"
               >
                 <div className="flex justify-center items-center">
                   <img
@@ -95,8 +104,10 @@ const SingleBook = () => {
                     className="w-10 h-10 rounded-full"
                   />
                 </div>
-                <p className="font-semibold">{review.user.name}</p>
-                <p>{review.review}</p>
+                <div className="flex flex-col">
+                  <p className="font-semibold">{review.user.name}</p>
+                  <p>{review.review}</p>
+                </div>
               </div>
             );
           })}
@@ -106,7 +117,7 @@ const SingleBook = () => {
       )}
 
       <textarea
-        className="mt-2 p-2 block w-[100%] md:w-[50%] resize-none"
+        className="mt-2 p-2 block w-[100%] md:w-[50%] resize-none border"
         rows={4}
         cols={40}
         placeholder="Type your review"
@@ -119,7 +130,7 @@ const SingleBook = () => {
         className="bg-black text-white rounded px-5 py-2 mt-2 mb-5"
         onClick={handleSubmitReview}
       >
-        Save
+        Review
       </button>
       <DeleteConfirmationDialog
         openModal={openModal}

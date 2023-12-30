@@ -18,8 +18,8 @@ const Navbar = () => {
       <Link to="/" className="font-bold cursor-pointer tex-xl">
         Book Guru
       </Link>
-      <div className="flex space-x-2">
-        <ul className="flex items-end  space-x-2">
+      <div className="flex space-x-4">
+        <ul className="flex items-end space-x-4">
           <li>
             <button>
               <Link to="/">Home</Link>
@@ -36,6 +36,7 @@ const Navbar = () => {
             </button>
           </li>
         </ul>
+
         <div className="cursor-pointer" onClick={handleLogout}>
           {user.email ? "Log Out" : "Log In"}
         </div>

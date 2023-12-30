@@ -1,15 +1,29 @@
+import { Link } from "react-router-dom";
+
 export default function Footer() {
   const date = new Date();
   const year = date.getFullYear();
 
   return (
-    <div className="bg-[#2a70f3] mx-4 text-white p-20">
+    <div className="bg-[#141e30] text-white p-20">
       <div className="flex justify-between">
         <div className="flex gap-20">
-          <ul className="space-y-2">
-            <li>Upcoming</li>
-            <li>Shipping</li>
-            <li>How it works</li>
+          <ul className="flex flex-col items-start space-y-2">
+            <li>
+              <button>
+                <Link to="/">Home</Link>
+              </button>
+            </li>
+            <li>
+              <button>
+                <Link to="/all-books">All Books</Link>
+              </button>
+            </li>
+            <li>
+              <button>
+                <Link to="/add-new-book">Add New</Link>
+              </button>
+            </li>
           </ul>
           <ul className="space-y-2">
             <li>Support</li>
@@ -24,7 +38,7 @@ export default function Footer() {
       <div className="flex w-full mt-20 gap-5">
         <p>Privacy Policy</p>
         <p>Terms & Condition</p>
-        <p className="ml-auto"> &#169; Book Mania {year}</p>
+        <p className="ml-auto"> &#169; Book Guru {year}</p>
       </div>
     </div>
   );

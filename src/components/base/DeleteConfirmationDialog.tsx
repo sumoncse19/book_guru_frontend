@@ -30,7 +30,11 @@ const DeleteConfirmationDialog = ({
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-[70vh] flex flex-col justify-center items-center">
+        Loading...
+      </div>
+    );
   }
   if (isError) {
     console.log("err");

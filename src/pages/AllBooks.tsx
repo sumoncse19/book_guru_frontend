@@ -83,7 +83,11 @@ const AllBooks = () => {
   }, [searchText, selectedCategory, selectDate, data?.data]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="w-full h-[70vh] flex flex-col justify-center items-center">
+        Loading...
+      </div>
+    );
   }
   if (error) {
     return <p>Error</p>;
