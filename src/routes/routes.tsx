@@ -2,10 +2,11 @@ import { createBrowserRouter } from "react-router-dom";
 
 import App from "../App";
 import Home from "../pages/Home";
-import Login from "../pages/Login";
 import Auth from "../pages/auth";
 import NotFound from "../pages/NotFound";
 import AllBooks from "../pages/AllBooks";
+import PrivateRoute from "./PrivateRoute";
+import AddNewBook from "../pages/AddNewBook";
 
 const routes = createBrowserRouter([
   {
@@ -20,19 +21,15 @@ const routes = createBrowserRouter([
         path: "/all-books",
         element: <AllBooks />,
       },
-      // {
-      //   path: "/checkout",
-      //   element: (
-      //     <PrivateRoute>
-      //       <Checkout />,
-      //     </PrivateRoute>
-      //   ),
-      // },
+      {
+        path: "/add-new-book",
+        element: (
+          <PrivateRoute>
+            <AddNewBook />
+          </PrivateRoute>
+        ),
+      },
     ],
-  },
-  {
-    path: "/login",
-    element: <Login />,
   },
   {
     path: "/auth",
