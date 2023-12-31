@@ -1,10 +1,19 @@
 import { useSingleBookQuery } from "../redux/feature/book/bookApi";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useAppSelector } from "../redux/hook";
+import { useState } from "react";
+import DeleteConfirmationDialog from "../components/base/DeleteConfirmationDialog";
 
 const SingleBook = () => {
+  const [openModal, setOpenModal] = useState(false);
   const { id } = useParams();
   const { data: book, isLoading, error } = useSingleBookQuery(id);
-
+  const { user } = useAppSelector((state) => state.user);
+  const getYear = (dateString: string) => {
+    const dateObject = new Date(dateString);
+    const year = dateObject.getFullYear();
+    return year;
+  };
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -22,17 +31,31 @@ const SingleBook = () => {
           <p className="text-xl">Author: {book?.data?.author}</p>
           <p className="text-xl">Genre: {book?.data?.genre}</p>
           <p className="text-xl">
-            Publication Date: {book?.data?.publicationDate}
+            Publication Date: {getYear(book?.data?.publicationDate)}
           </p>
-          {/* <ul className="space-y-1 text-lg">
-            {product?.features?.map((feature: string) => (
-              <li key={feature}>{feature}</li>
-            ))}
-          </ul>
-          <Button>Add to cart</Button> */}
+          {user.email && (
+            <div className="flex gap-4">
+              <Link
+                to={`/edit-book/${id}`}
+                className="bg-green-400 px-3 py-2 rounded-lg"
+              >
+                Edit Book
+              </Link>
+              <button
+                onClick={() => setOpenModal(true)}
+                className="bg-red-500 px-3 py-2 rounded-lg"
+              >
+                Delete Book
+              </button>
+            </div>
+          )}
         </div>
       </div>
       {/* <ProductReview id={id!} /> */}
+      <DeleteConfirmationDialog
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+      />
     </>
   );
 };
