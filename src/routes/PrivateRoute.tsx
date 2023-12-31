@@ -10,10 +10,11 @@ export default function PrivateRoute({ children }: IProps) {
   const { user } = useAppSelector((state) => state.user);
 
   const { pathname } = useLocation();
-  console.log(pathname, "pathname from private route");
 
   if (!user.email) {
-    return <Navigate to="/auth/#login" state={{ path: pathname }} />;
+    sessionStorage.setItem("redirectAfterLogin", pathname);
+
+    return <Navigate to="/auth/#login" replace={true} />;
   }
 
   return children;
