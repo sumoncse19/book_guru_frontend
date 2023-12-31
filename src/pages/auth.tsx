@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import "../assets/css/auth/auth.css";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   useSignInMutation,
   useSignUpMutation,
 } from "../redux/feature/user/userApi";
 import { useAppDispatch } from "../redux/hook";
 import { setUser } from "../redux/feature/user/userSlice";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { SerializedError } from "@reduxjs/toolkit";
+
+type ApiResponse = {
+  data?: any;
+  error?: FetchBaseQueryError | SerializedError;
+};
 
 const Auth = () => {
   const [isLoginActive, setIsLoginActive] = useState(true);
@@ -43,49 +50,42 @@ const Auth = () => {
   const [signIn] = useSignInMutation();
   const [signUp] = useSignUpMutation();
   const dispatch = useAppDispatch();
-
-  const redirectAfterLogin =
-    sessionStorage.getItem("redirectAfterLogin") || "/";
-
+  const isFetchBaseQueryError = (error: any): error is FetchBaseQueryError => {
+    return error && "status" in error;
+  };
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const apiResponse = await signIn({
+    const apiResponse: ApiResponse = await signIn({
       email: `${email}`,
       password: `${password}`,
     });
-
-    navigate(redirectAfterLogin, { replace: true });
-    sessionStorage.removeItem("redirectAfterLogin");
-
-    if (apiResponse?.error?.status === 404) {
-      alert(apiResponse.error.data.response);
-    } else {
+    navigate("/");
+    if (
+      isFetchBaseQueryError(apiResponse.error) &&
+      apiResponse.error.status === 404
+    ) {
+      console.log(apiResponse.error?.data);
+    } else if (apiResponse.data) {
       dispatch(setUser(apiResponse.data.user));
     }
   };
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const apiResponse = await signUp({
+    const apiResponse: ApiResponse = await signUp({
       name: `${firstName} ${lastName}`,
       email: `${email}`,
       password: `${password}`,
     });
-    if (apiResponse.data?.response === "User already exist") {
-      alert(apiResponse.data?.response);
+    if (apiResponse?.data?.response === "User already exist") {
+      alert(apiResponse?.data?.response);
     } else {
       navigate("/auth/#login");
     }
   };
 
   return (
-    <div className="authBody h-screen flex flex-col justify-center content-center flex-wrap relative">
-      <Link
-        to="/"
-        className="text-white text-xl font-bold absolute top-4 left-4 "
-      >
-        Book Guru
-      </Link>
+    <div className="authBody h-screen flex flex-col justify-center content-center flex-wrap">
       <div className="authWrapper">
         <div className="button-box">
           <div
@@ -102,6 +102,7 @@ const Auth = () => {
             &nbsp;&nbsp;Register
           </button>
         </div>
+
         <div className="form-box">
           <form
             id="login"

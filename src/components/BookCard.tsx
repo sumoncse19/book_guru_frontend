@@ -15,6 +15,7 @@ const BookCard = ({ book }: { book: BookInterface }) => {
         <div className="flex flex-col">
           <h1>{book?.title}</h1>
           <span>Autor: {book?.author}</span>
+          <span>Genre: {book.genre}</span>
         </div>
       </div>
     </div>

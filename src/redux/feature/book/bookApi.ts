@@ -1,6 +1,6 @@
 import { api } from "../../api/apiSlice";
 
-const productApi = api.injectEndpoints({
+const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getBooks: builder.query({
       query: () => "/books",
@@ -43,6 +43,18 @@ const productApi = api.injectEndpoints({
       }),
       invalidatesTags: ["reviews"],
     }),
+    postReview: builder.mutation({
+      query: (data) => ({
+        url: `/review`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["reviews"],
+    }),
+    getReviews: builder.query({
+      query: (id) => `/reviews/${id}`,
+      providesTags: ["reviews"],
+    }),
     getComment: builder.query({
       query: (id) => `/comment/${id}`,
       providesTags: ["reviews"],
@@ -58,4 +70,6 @@ export const {
   useEditBookMutation,
   usePostBookMutation,
   useSingleBookQuery,
-} = productApi;
+  usePostReviewMutation,
+  useGetReviewsQuery,
+} = bookApi;
