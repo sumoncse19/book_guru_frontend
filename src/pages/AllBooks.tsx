@@ -2,22 +2,26 @@ import { useEffect, useState } from "react";
 import BookCard from "../components/BookCard";
 import { useGetBooksQuery } from "../redux/feature/book/bookApi";
 import { BookInterface } from "../types/bookType";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 const AllBooks = () => {
   const { data, isLoading, error } = useGetBooksQuery(undefined);
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [allCategories, setAllCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All Category");
+  const [allCategories, setAllCategories] = useState<string[]>([]);
   const [allBooks, setAllBooks] = useState<BookInterface[]>([]);
+  const [selectDate, setSelectDate] = useState<Date | null | undefined>(null);
 
   useEffect(() => {
     if (data?.data) {
       setAllBooks([...data.data]); // Assuming data.data is an array of Book objects
     }
-    const genresSet = new Set();
+    const genresSet = new Set<string>();
 
-    data?.data.forEach((item, index) => {
+    data?.data.forEach((item: BookInterface) => {
       genresSet.add(item.genre);
     });
     genresSet.add("All Category");
@@ -26,6 +30,11 @@ const AllBooks = () => {
 
   useEffect(() => {
     let filteredData = [];
+    const currentSelectDate = selectDate
+      ? new Date(selectDate).getFullYear()
+      : null;
+
+    console.log(currentSelectDate, "currentSelectDate", selectDate);
 
     if (searchText !== "") {
       // Convert search text to lower case for case-insensitive search
@@ -33,7 +42,7 @@ const AllBooks = () => {
 
       // Filter data based on matching title, author, or genre
       filteredData = data?.data.filter(
-        (item) =>
+        (item: BookInterface) =>
           item.title.toLowerCase().includes(lowerCaseSearchText) ||
           item.author.toLowerCase().includes(lowerCaseSearchText) ||
           item.genre.toLowerCase().includes(lowerCaseSearchText)
@@ -42,16 +51,36 @@ const AllBooks = () => {
     } else if (searchText === "" && selectedCategory !== "All Category") {
       const lowerCaseSelectedCategory = selectedCategory.toLowerCase();
       // Filter data based on matching title, author, or genre
-      filteredData = data?.data.filter((item) =>
-        item.genre.toLowerCase().includes(lowerCaseSelectedCategory)
+      if (currentSelectDate !== 1970 && selectDate !== null) {
+        filteredData = data?.data.filter(
+          (item: BookInterface) =>
+            item.genre.toLowerCase().includes(lowerCaseSelectedCategory) &&
+            parseInt(item.publicationDate) === currentSelectDate
+        );
+      } else {
+        filteredData = data?.data.filter((item: BookInterface) =>
+          item.genre.toLowerCase().includes(lowerCaseSelectedCategory)
+        );
+      }
+      setAllBooks(filteredData);
+    } else if (
+      searchText === "" &&
+      selectedCategory === "All Category" &&
+      currentSelectDate !== 1970 &&
+      selectDate !== null
+    ) {
+      const filteredData = data?.data.filter(
+        (item: BookInterface) =>
+          parseInt(item.publicationDate) === currentSelectDate
       );
+
       setAllBooks(filteredData);
     } else {
       // If no search text, use the original data
       filteredData = data?.data;
       setAllBooks(filteredData);
     }
-  }, [searchText, selectedCategory, data?.data]);
+  }, [searchText, selectedCategory, selectDate, data?.data]);
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -97,9 +126,9 @@ const AllBooks = () => {
               {showDropdown && (
                 <div className="z-10 bg-white divide-y divide-gray-100 rounded-l-lg shadow w-44 dark:bg-gray-700">
                   <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                    {allCategories.map((category) => {
+                    {allCategories.map((category, index) => {
                       return (
-                        <li>
+                        <li key={index}>
                           <button
                             type="button"
                             className={`inline-flex w-full px-4 py-2 hover:bg-gray-100  ${
@@ -121,6 +150,19 @@ const AllBooks = () => {
                 </div>
               )}
             </div>
+            <div className="border-l border-r border-white">
+              <DatePicker
+                selected={selectDate}
+                onChange={(date) => {
+                  setSelectDate(date);
+                  setSearchText("");
+                }}
+                className="w-[200px] px-3 py-2 !outline-none border-none bg-gray-700 text-white text-center"
+                showYearPicker
+                isClearable
+                dateFormat="yyyy"
+              />
+            </div>
 
             <div className="w-full flex h-10">
               <input
@@ -132,6 +174,7 @@ const AllBooks = () => {
                 onChange={(e) => {
                   setSearchText(e.target.value);
                   setSelectedCategory("All Category");
+                  setSelectDate(null);
                 }}
               />
               <button
