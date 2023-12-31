@@ -15,7 +15,9 @@ const Navbar = () => {
   // linear-gradient(#141e30, #243b55)
   return (
     <div className="flex justify-between p-5 bg-[#141e30] text-white">
-      <div className="font-bold">Book Guru</div>
+      <Link to="/" className="font-bold cursor-pointer tex-xl">
+        Book Guru
+      </Link>
       <div className="flex space-x-2">
         <ul className="flex items-end  space-x-2">
           <li>
