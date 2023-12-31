@@ -1,11 +1,21 @@
 import { useEffect, useState } from "react";
 import "../assets/css/auth/auth.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import {
+  useSignInMutation,
+  useSignUpMutation,
+} from "../redux/feature/user/userApi";
+import { useAppDispatch } from "../redux/hook";
+import { setUser } from "../redux/feature/user/userSlice";
 
 const Auth = () => {
   const [isLoginActive, setIsLoginActive] = useState(true);
-  const navigate = useNavigate();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
   const handleLoginClick = () => {
     setIsLoginActive(true);
     navigate("/auth/#login");
@@ -24,7 +34,47 @@ const Auth = () => {
     } else if (location.hash === "#login") {
       handleLoginClick();
     }
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
   }, [location.hash, navigate]);
+
+  const [signIn] = useSignInMutation();
+  const [signUp] = useSignUpMutation();
+  const dispatch = useAppDispatch();
+
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const apiResponse = await signIn({
+      email: `${email}`,
+      password: `${password}`,
+    });
+    navigate("/");
+
+    if (apiResponse?.error?.status === 404) {
+      console.log(apiResponse.error.data.response);
+    } else {
+      dispatch(setUser(apiResponse.data.user));
+      console.log(apiResponse.data.user, "apiResponse");
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const apiResponse = await signUp({
+      name: `${firstName} ${lastName}`,
+      email: `${email}`,
+      password: `${password}`,
+    });
+    if (apiResponse.data?.response === "User already exist") {
+      alert(apiResponse.data?.response);
+    } else {
+      navigate("/auth/#login");
+    }
+
+    console.log(apiResponse, "apiResponse");
+  };
 
   return (
     <div className="authBody h-screen flex flex-col justify-center content-center flex-wrap">
@@ -49,14 +99,27 @@ const Auth = () => {
           <form
             id="login"
             className="login-form"
+            onSubmit={handleSignIn}
             style={{ left: isLoginActive ? "0px" : "-115%" }}
           >
             <div className="input-box">
-              <input type="email" id="loginEmail" required />
+              <input
+                id="loginEmail"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
               <label htmlFor="email">Email</label>
             </div>
             <div className="input-box">
-              <input type="password" id="password" required />
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
               <label htmlFor="password">Password</label>
             </div>
             <div className="check-box">
@@ -70,22 +133,47 @@ const Auth = () => {
             id="signup"
             className="register-form"
             style={{ left: isLoginActive ? "115%" : "0px" }}
+            onSubmit={handleSignUp}
           >
             <div className="input-box">
-              <input type="text" id="firstName" required />
+              <input
+                id="firstName"
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
               <label htmlFor="firstName">First Name</label>
             </div>
             <div className="input-box">
-              <input type="text" id="lastName" required />
+              <input
+                id="lastName"
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
               <label htmlFor="lastName">Last Name</label>
             </div>
             <div className="input-box">
-              <input type="email" id="regEmail" required />
+              <input
+                id="regEmail"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
               <label htmlFor="email">Email</label>
             </div>
 
             <div className="input-box">
-              <input type="password" id="password2" required />
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
               <label htmlFor="password2">Password</label>
             </div>
             <div className="check-box">
