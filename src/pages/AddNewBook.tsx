@@ -1,33 +1,43 @@
-import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePostBookMutation } from "../redux/feature/book/bookApi";
+import toast from "react-hot-toast";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 const AddNewBook = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [genre, setGenre] = useState("");
-  const [publicationDate, setPublicationDate] = useState("");
   const [image, setImage] = useState("");
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [postBook, { isLoading, isError, isSuccess }] = usePostBookMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      setTitle("");
+      setAuthor("");
+      setGenre("");
+      setImage("");
+      toast.success("Add book successful");
+    }
+  }, [isSuccess]);
 
   const handleAddBook = () => {
-    const data = {
+    postBook({
       title,
       author,
       genre,
-      publicationDate,
+      publicationDate: startDate,
       image,
-    };
-    console.log(data);
-
-    axios.post("http://localhost:5000/book", data).then((res) => {
-      if (res.data) {
-        setTitle("");
-        setAuthor("");
-        setGenre("");
-        setPublicationDate("");
-        setImage("");
-      }
     });
   };
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+  if (isError) {
+    return <p>Error</p>;
+  }
   return (
     <div className="p-24 flex flex-col items-center">
       <h1 className="text-2xl font-bold mb-7">Add New Book</h1>
@@ -75,18 +85,16 @@ const AddNewBook = () => {
           />
         </div>
         <div className="flex justify-between items-center my-2">
-          <label className="text-xl font-medium " htmlFor="publication">
+          <label className="text-xl font-medium" htmlFor="publication">
             Publication
           </label>
-          <input
-            value={publicationDate}
-            onChange={(e) => setPublicationDate(e.target.value)}
-            placeholder="Write the publication date"
-            className="border border-blue-500 rounded-md outline-none px-3 py-2 w-[70%]"
-            type="text"
-            name="publication"
-            id=""
-          />
+          <div className="w-[70%] border border-blue-500 rounded-md outline-none ">
+            <DatePicker
+              selected={startDate}
+              onChange={(date: Date | null) => setStartDate(date)}
+              className="w-full px-3 py-2 !outline-none border-none "
+            />
+          </div>
         </div>
         <div className="flex justify-between items-center my-2">
           <label className="text-xl font-medium " htmlFor="image">
@@ -112,5 +120,4 @@ const AddNewBook = () => {
     </div>
   );
 };
-
 export default AddNewBook;

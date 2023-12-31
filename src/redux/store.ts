@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 
@@ -14,7 +14,7 @@ const userPersistConfig = {
 const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
 
 const rootReducer = combineReducers({
-  user: persistedUserReducer, // Add other reducers here
+  user: persistedUserReducer,
   [api.reducerPath]: api.reducer,
 });
 

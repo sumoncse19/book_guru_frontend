@@ -6,7 +6,7 @@ const BookCard = ({ book }: { book: BookInterface }) => {
   return (
     <div className="border border-black flex items-center">
       <div
-        onClick={() => navigate(`/book/${book?._id}`)}
+        onClick={() => navigate(`/book/${book._id}`)}
         className="w-[200px] h-[300px] flex items-center  p-2 cursor-pointer"
       >
         <img className="w-[100%]" src={book?.image} alt="" />
